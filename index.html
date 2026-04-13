@@ -3,369 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REFER SYSTEM — Коаліція Пасивного Доходу</title>
+    <title>REFER SYSTEM v2.0 | Екосистема прибутку</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* РОЗШИРЕНІ СТИЛІ ІНТЕРФЕЙСУ */
+        /* РОЗШИРЕНА СТИЛІЗАЦІЯ ІНТЕРФЕЙСУ */
         :root {
-            --bg-dark: #020617;
-            --card-bg: #0f172a;
-            --accent-cyan: #22d3ee;
-            --gold-main: #fbbf24;
-            --success-green: #10b981;
-            --error-red: #ef4444;
-            --text-main: #f8fafc;
-            --border-color: #1e293b;
-            --shadow-glow: 0 10px 40px -10px rgba(34, 211, 238, 0.3);
+            --main-bg: #030712;
+            --glass-bg: rgba(17, 24, 39, 0.8);
+            --accent-color: #06b6d4;
+            --gold: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-light: #f3f4f6;
+            --border: #1f2937;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Montserrat', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
+            background: var(--main-bg);
+            color: var(--text-light);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 40px 15px;
             min-height: 100vh;
         }
 
-        .main-container {
+        /* КОНТЕЙНЕР ПРОЕКТУ */
+        .app-wrapper {
             width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 32px;
-            padding: 40px 30px;
-            box-shadow: var(--shadow-glow);
+            max-width: 650px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 45px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
             position: relative;
-            overflow: hidden;
         }
 
-        /* Декоративні елементи */
-        .main-container::before {
+        /* Анімаційні ефекти фону */
+        .app-wrapper::after {
             content: '';
             position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            background: var(--accent-cyan);
-            filter: blur(100px);
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-color), transparent, var(--gold));
+            z-index: -1;
+            border-radius: 42px;
             opacity: 0.15;
-            z-index: 0;
-        }
-
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
         }
 
         header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
         }
 
         header h1 {
+            font-size: 2.5rem;
             font-weight: 900;
-            font-size: 2.2rem;
+            letter-spacing: -1.5px;
             text-transform: uppercase;
-            letter-spacing: -2px;
         }
 
         header h1 span {
-            color: var(--accent-cyan);
-            text-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+            color: var(--accent-color);
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
         }
 
-        .summary-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 1));
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 25px;
+        /* КАРТКА БАЛАНСУ */
+        .balance-card {
+            background: #111827;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
-        .summary-card p {
-            font-size: 0.9rem;
+        .balance-card span {
+            font-size: 0.8rem;
+            color: #9ca3af;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #94a3b8;
-            margin-bottom: 5px;
+            letter-spacing: 2px;
         }
 
-        .summary-card h2 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--gold-main);
+        .balance-card h2 {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-top: 10px;
         }
 
-        /* Стилізація блоків банків */
-        .bank-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border-color);
+        /* СТИЛІ БАНКІВСЬКИХ КАРТОК */
+        .bank-item {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid var(--border);
             border-radius: 22px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px;
+            margin-bottom: 18px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .bank-card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
+        .bank-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
         }
 
-        .bank-info {
+        .bank-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .bank-title {
-            font-size: 1.25rem;
+        .bank-name {
+            font-size: 1.3rem;
             font-weight: 800;
         }
 
-        .reward-badge {
-            background: var(--gold-main);
-            color: #000;
+        .bank-bonus {
+            color: var(--gold);
             font-weight: 900;
-            padding: 4px 12px;
-            border-radius: 10px;
-            font-size: 0.85rem;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 5px 15px;
+            border-radius: 12px;
         }
 
-        /* Кнопки */
-        .btn {
-            display: block;
+        /* КНОПКИ */
+        .action-btn {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             font-size: 1rem;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
             transition: 0.3s;
-            text-align: center;
-            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
-        .btn-primary {
-            background-color: var(--accent-cyan);
-            color: #020617;
-            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
-        }
+        .btn-reg { background: var(--accent-color); color: #000; }
+        .btn-reg:hover { background: #22d3ee; box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
 
-        .btn-primary:hover {
-            background-color: #67e8f9;
-            transform: scale(1.02);
-        }
+        .btn-save { background: var(--success); color: #fff; margin-top: 15px; }
+        .btn-save:hover { background: #34d399; }
 
-        .btn-success {
-            background-color: var(--success-green);
-            color: white;
-            margin-top: 15px;
-        }
-
-        /* Секція активації */
-        .activation-section {
+        /* ПОЛЯ ВВОДУ */
+        .input-group {
             margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--border-color);
-            display: none;
+            display: none; /* Показуємо після кліку на реєстрацію */
+            animation: slideDown 0.4s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         input {
             width: 100%;
-            background: #020617;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            color: white;
-            font-size: 1rem;
+            padding: 15px;
+            background: #030712;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: #fff;
             outline: none;
-            transition: 0.3s;
+            font-size: 1rem;
         }
 
-        input:focus {
-            border-color: var(--accent-cyan);
-        }
+        input:focus { border-color: var(--accent-color); }
 
-        /* Секція заблокованого банку */
-        .bank-card.completed {
-            border-color: var(--success-green);
+        /* СТАН АКТИВОВАНОГО БАНКУ */
+        .bank-item.active {
+            border-color: var(--success);
             background: rgba(16, 185, 129, 0.05);
-            pointer-events: none;
-            opacity: 0.7;
         }
 
-        .bank-card.completed::after {
-            content: '✓ ПЕРЕВІРЕНО ТА АКТИВОВАНО';
-            display: block;
-            text-align: center;
+        .status-badge {
+            display: none;
+            color: var(--success);
             font-size: 0.75rem;
             font-weight: 900;
-            color: var(--success-green);
             margin-top: 10px;
-        }
-
-        /* ОСОБИСТИЙ КАБІНЕТ */
-        .partner-panel {
-            margin-top: 40px;
-            padding: 30px;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 2px solid var(--accent-cyan);
-            border-radius: 28px;
             text-align: center;
         }
 
-        .ref-link-display {
-            background: #020617;
+        .bank-item.active .status-badge { display: block; }
+        .bank-item.active .action-btn, 
+        .bank-item.active .input-group { display: none !important; }
+
+        /* ПАНЕЛЬ ПАРТНЕРА (КАБІНЕТ) */
+        .partner-panel {
+            margin-top: 50px;
+            padding: 35px;
+            background: linear-gradient(145deg, #111827, #030712);
+            border: 2px solid var(--accent-color);
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        .ref-box {
+            background: #030712;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 15px;
             margin: 20px 0;
+            border: 1px dashed var(--accent-color);
+            color: var(--accent-color);
             font-family: monospace;
-            font-size: 0.85rem;
-            color: var(--accent-cyan);
+            font-size: 0.9rem;
             word-break: break-all;
-            border: 1px solid var(--border-color);
         }
 
         .stat-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
-        .stat-item {
-            background: rgba(2, 6, 23, 0.5);
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
             padding: 15px;
             border-radius: 15px;
         }
 
-        .stat-value {
+        .stat-num {
+            display: block;
             font-size: 1.5rem;
             font-weight: 900;
-            color: var(--gold-main);
-            display: block;
+            color: var(--gold);
         }
 
-        .danger-notice {
-            margin-top: 25px;
+        .warning-footer {
             background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--error-red);
-            color: var(--error-red);
+            border: 1px solid var(--danger);
+            color: var(--danger);
             padding: 15px;
-            border-radius: 16px;
+            border-radius: 15px;
+            margin-top: 25px;
             font-size: 0.8rem;
             font-weight: 700;
         }
 
         .hidden { display: none; }
 
-        @media (max-width: 480px) {
-            .main-container { padding: 25px 15px; }
-            header h1 { font-size: 1.7rem; }
+        @media (max-width: 500px) {
+            .app-wrapper { padding: 25px; }
+            header h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="content-wrapper">
-        <header>
-            <h1>Коаліція <span>REFER</span></h1>
-            <p style="color: #94a3b8; font-size: 0.85rem;">Система автоматичного розподілу прибутку</p>
-        </header>
+<div class="app-wrapper">
+    <header>
+        <h1>Коаліція <span>REFER</span></h1>
+        <p style="font-size: 0.8rem; color: #6b7280; margin-top: 5px;">СИСТЕМА РОЗПОДІЛУ РЕФЕРАЛЬНИХ ПРИБУТКІВ</p>
+    </header>
 
-        <div class="summary-card">
-            <p>Ваш доступний ліміт</p>
-            <h2 id="total-profit">1000 ГРН</h2>
+    <div class="balance-card">
+        <span>Ваш потенційний дохід</span>
+        <h2 id="total-val">1000 ГРН</h2>
+    </div>
+
+    <div id="banks-container">
+        <div class="bank-item" id="block-raiffeisen">
+            <div class="bank-header">
+                <span class="bank-name">Raiffeisen</span>
+                <span class="bank-bonus">300 ГРН</span>
+            </div>
+            <button class="action-btn btn-reg" onclick="handleStep1('raiffeisen')">1. ЗАРЕЄСТРУВАТИСЯ</button>
+            <div class="input-group" id="input-raiffeisen">
+                <input type="text" id="url-raiffeisen" placeholder="Вставте ВАШЕ посилання Райффайзен">
+                <button class="action-btn btn-save" onclick="handleStep2('raiffeisen')">2. АКТИВУВАТИ</button>
+            </div>
+            <div class="status-badge">✅ БАНК ПІДКЛЮЧЕНО ДО ВАШОГО ПРОФІЛЮ</div>
         </div>
 
-        <div id="banks-list">
-            <div class="bank-card" id="card-raiffeisen">
-                <div class="bank-info">
-                    <span class="bank-title">Raiffeisen</span>
-                    <span class="reward-badge">300 ГРН</span>
-                </div>
-                <button class="btn btn-primary" onclick="initRegistration('raiffeisen')">1. Реєстрація</button>
-                <div class="activation-section" id="act-raiffeisen">
-                    <input type="text" id="url-raiffeisen" placeholder="Вставте Ваше реф-посилання">
-                    <button class="btn btn-success" onclick="processActivation('raiffeisen')">2. Активація</button>
-                </div>
+        <div class="bank-item" id="block-alliance">
+            <div class="bank-header">
+                <span class="bank-name">Alliance Bank</span>
+                <span class="bank-bonus">300 ГРН</span>
             </div>
-
-            <div class="bank-card" id="card-alliance">
-                <div class="bank-info">
-                    <span class="bank-title">Alliance Bank</span>
-                    <span class="reward-badge">300 ГРН</span>
-                </div>
-                <button class="btn btn-primary" onclick="initRegistration('alliance')">1. Реєстрація</button>
-                <div class="activation-section" id="act-alliance">
-                    <input type="text" id="url-alliance" placeholder="Вставте Ваше реф-посилання">
-                    <button class="btn btn-success" onclick="processActivation('alliance')">2. Активація</button>
-                </div>
+            <button class="action-btn btn-reg" onclick="handleStep1('alliance')">1. ЗАРЕЄСТРУВАТИСЯ</button>
+            <div class="input-group" id="input-alliance">
+                <input type="text" id="url-alliance" placeholder="Вставте ВАШЕ посилання Альянс">
+                <button class="action-btn btn-save" onclick="handleStep2('alliance')">2. АКТИВУВАТИ</button>
             </div>
+            <div class="status-badge">✅ БАНК ПІДКЛЮЧЕНО ДО ВАШОГО ПРОФІЛЮ</div>
+        </div>
 
-            <div class="bank-card" id="card-izibank">
-                <div class="bank-info">
-                    <span class="bank-title">izibank</span>
-                    <span class="reward-badge">150 ГРН</span>
-                </div>
-                <button class="btn btn-primary" onclick="initRegistration('izibank')">1. Реєстрація</button>
-                <div class="activation-section" id="act-izibank">
-                    <input type="text" id="url-izibank" placeholder="Вставте Ваше реф-посилання">
-                    <button class="btn btn-success" onclick="processActivation('izibank')">2. Активація</button>
-                </div>
+        <div class="bank-item" id="block-izibank">
+            <div class="bank-header">
+                <span class="bank-name">izibank</span>
+                <span class="bank-bonus">150 ГРН</span>
+            </div>
+            <button class="action-btn btn-reg" onclick="handleStep1('izibank')">1. ЗАРЕЄСТРУВАТИСЯ</button>
+            <div class="input-group" id="input-izibank">
+                <input type="text" id="url-izibank" placeholder="Вставте ВАШЕ посилання izibank">
+                <button class="action-btn btn-save" onclick="handleStep2('izibank')">2. АКТИВУВАТИ</button>
+            </div>
+            <div class="status-badge">✅ БАНК ПІДКЛЮЧЕНО ДО ВАШОГО ПРОФІЛЮ</div>
+        </div>
+    </div>
+
+    <div id="partner-dashboard" class="partner-panel hidden">
+        <h3 style="color: var(--gold)">🤝 ВАШ ПАРТНЕРСЬКИЙ КАБІНЕТ</h3>
+        <p style="margin-top: 10px; font-size: 0.85rem;">Розповсюджуйте це посилання. Люди, які перейдуть за ним, будуть реєструватися за ВАШИМИ лінками (у 60% випадків).</p>
+        
+        <div class="ref-box" id="personal-link-display">...завантаження...</div>
+        <button class="action-btn btn-reg" style="padding: 12px; font-size: 0.8rem;" onclick="copyLink()">КОПІЮВАТИ ПОСИЛАННЯ</button>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <span style="font-size: 0.65rem; color: #9ca3af;">ВАШ ID</span>
+                <span class="stat-num" id="display-id">...</span>
+            </div>
+            <div class="stat-card">
+                <span style="font-size: 0.65rem; color: #9ca3af;">ЗАПРОШЕНО</span>
+                <span class="stat-num" id="display-referrals">0</span>
             </div>
         </div>
 
-        <div id="user-dashboard" class="partner-panel hidden">
-            <h3 style="color: var(--gold-main); text-transform: uppercase;">⚡ Ваш Кабінет Партнера</h3>
-            <p style="font-size: 0.8rem; margin-top: 10px;">Для того, щоб Ваші посилання залишалися в системі, розповсюджуйте Ваше персональне посилання на цей сайт:</p>
-            
-            <div class="ref-link-display" id="my-personal-link">Завантаження...</div>
-            <button class="btn btn-primary" style="padding: 10px;" onclick="copyMyLink()">Копіювати посилання</button>
-
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <span style="font-size: 0.7rem; color: #94a3b8;">ЗАПРОШЕНО ЛЮДЕЙ</span>
-                    <span class="stat-value" id="invite-count">0</span>
-                </div>
-            </div>
-
-            <div class="danger-notice">
-                🚩 ВАЖЛИВО: Ви повинні привести мінімум 2 нових учасників протягом 30 днів. 
-                В іншому випадку алгоритм автоматично видалить Ваші посилання з пулу 60/40!
-            </div>
+        <div class="warning-footer">
+            ⚠️ УВАГА: Система видаляє посилання учасників, які не привели жодної людини протягом 30 днів. Будьте активними!
         </div>
     </div>
 </div>
 
 <script>
-    /**
-     * КОНФІГУРАЦІЯ ТА ДАНІ АДМІНІСТРАТОРА
-     */
+    /* ============================================================
+       ФУНДАМЕНТАЛЬНА КОНФІГУРАЦІЯ
+       ============================================================ */
     const firebaseConfig = {
         apiKey: "AIzaSyCu-Wx23P4OpxUbSBywpdiETZHbOe08z9c",
         authDomain: "refer-c9d1b.firebaseapp.com",
@@ -376,151 +361,145 @@
         appId: "1:552445924289:web:3efe63c023a17078659540"
     };
 
-    // Ініціалізація
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
 
-    // ТВОЇ АДМІНСЬКІ ПОСИЛАННЯ (Для 60% рандому)
-    const ADMIN_DATA = {
+    // Твої прямі посилання (Адмінський пул 60%)
+    const ADMIN_POOL = {
         raiffeisen: ["https://mrf-static.apps.raiffeisen.ua/v1/member-get-member?adj_t=1s492itc_1szn7s6p&ref_id=13251364"],
         izibank: ["https://izibank.com.ua/r/pB6P"],
         alliance: [
-            "https://alb.ua/r/-0VuEwA", // Посилання №1
-            "https://alb.ua/r/uWeTLAA"  // Посилання №2
+            "https://alb.ua/r/-0VuEwA",
+            "https://alb.ua/r/uWeTLAA"
         ]
     };
 
-    /**
-     * ЛОГІКА ІДЕНТИФІКАЦІЇ ТА РЕФЕРАЛІВ
-     */
-    let currentUserId = localStorage.getItem('refer_system_uid');
-    if (!currentUserId) {
-        currentUserId = 'USR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        localStorage.setItem('refer_system_uid', currentUserId);
-    }
-
-    // Відстеження: хто запросив поточного юзера
-    const urlParams = new URLSearchParams(window.location.search);
-    const referrer = urlParams.get('ref');
-
-    // Якщо прийшов за посиланням — записуємо в базу (тільки 1 раз)
-    if (referrer && referrer !== currentUserId && !localStorage.getItem('registered_as_referral')) {
-        database.ref('users_registry/' + referrer + '/referrals_count').transaction((count) => {
-            return (count || 0) + 1;
-        });
-        database.ref('users_registry/' + currentUserId).set({
-            invitedBy: referrer,
-            regDate: Date.now()
-        });
-        localStorage.setItem('registered_as_referral', 'true');
-    }
-
-    /**
-     * ОСНОВНІ ФУНКЦІЇ СИСТЕМИ
-     */
+    /* ============================================================
+       ЛОГІКА ІДЕНТИФІКАЦІЇ ТА РЕФЕРАЛІВ
+       ============================================================ */
     
-    // 1. Початок реєстрації (Вибір між твоїм лінком та лінком юзера)
-    async function initRegistration(bankKey) {
-        const luck = Math.floor(Math.random() * 100);
-        let targetUrl = "";
+    // Створюємо або отримуємо ID користувача
+    let uID = localStorage.getItem('refer_uid');
+    if (!uID) {
+        uID = 'ID-' + Math.random().toString(36).substr(2, 7).toUpperCase();
+        localStorage.setItem('refer_uid', uID);
+    }
 
-        if (luck < 60) {
-            // --- 60% ПРІОРИТЕТ АДМІНА ---
-            if (bankKey === 'alliance') {
-                // Ротація твоїх двох посилань Альянсу
-                const lastIdxSnap = await database.ref('admin_settings/alliance_last_index').once('value');
-                let lastIdx = lastIdxSnap.val() || 0;
+    // Відстежуємо, хто запросив
+    const params = new URLSearchParams(window.location.search);
+    const refOwner = params.get('ref');
+
+    // Якщо це новий візит по рефералці - зараховуємо інвайт
+    if (refOwner && refOwner !== uID && !localStorage.getItem('counted_inv')) {
+        db.ref('users/' + refOwner + '/stats/count').transaction(c => (c || 0) + 1);
+        db.ref('users/' + uID).update({ invited_by: refOwner, join_date: Date.now() });
+        localStorage.setItem('counted_inv', 'true');
+    }
+
+    /* ============================================================
+       ОСНОВНИЙ ФУНКЦІОНАЛ (РОЗПОДІЛ 60/40)
+       ============================================================ */
+
+    async function handleStep1(bank) {
+        const rand = Math.floor(Math.random() * 100);
+        let finalLink = "";
+
+        // ЛОГІКА 60% ПРІОРИТЕТУ АДМІНА
+        if (rand < 60) {
+            if (bank === 'alliance') {
+                // Ротація твоїх двох посилань через базу (щоб було 50/50 між ними)
+                const snap = await db.ref('admin/alliance_rotation').once('value');
+                let lastIdx = snap.val() || 0;
                 let nextIdx = lastIdx === 0 ? 1 : 0;
-                
-                targetUrl = ADMIN_DATA.alliance[nextIdx];
-                database.ref('admin_settings/alliance_last_index').set(nextIdx);
+                finalLink = ADMIN_POOL.alliance[nextIdx];
+                db.ref('admin/alliance_rotation').set(nextIdx);
             } else {
-                targetUrl = ADMIN_DATA[bankKey][0];
+                finalLink = ADMIN_POOL[bank][0];
             }
-        } else {
-            // --- 40% РАНДОМ КОРИСТУВАЧІВ ---
-            const poolSnap = await database.ref('referral_pool/' + bankKey).once('value');
+        } 
+        // ЛОГІКА 40% ПУЛУ УЧАСНИКІВ
+        else {
+            const poolSnap = await db.ref('pool/' + bank).once('value');
             const poolData = poolSnap.val();
-
             if (poolData) {
-                const userIds = Object.keys(poolData);
-                const randomUserId = userIds[Math.floor(Math.random() * userIds.length)];
-                targetUrl = poolData[randomUserId].link;
+                const keys = Object.keys(poolData);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                finalLink = poolData[randomKey].url;
             } else {
-                // Якщо база пуста — даємо твоє
-                targetUrl = ADMIN_DATA[bankKey][0];
+                finalLink = ADMIN_POOL[bank][0]; // Якщо юзерів ще немає, даємо твоє
             }
         }
 
-        // Відкриваємо посилання та показуємо зону активації
-        window.open(targetUrl, '_blank');
+        // Відкриваємо посилання
+        if (bank === 'raiffeisen') {
+            // Спеціальний фікс для Райфу: відкриваємо через прямий редірект
+            const a = document.createElement('a');
+            a.href = finalLink;
+            a.target = '_blank';
+            a.click();
+        } else {
+            window.open(finalLink, '_blank');
+        }
+
+        // Показуємо поле активації
         setTimeout(() => {
-            document.getElementById('act-' + bankKey).style.display = 'block';
-        }, 1500);
+            document.getElementById('input-' + bank).style.display = 'block';
+        }, 1000);
     }
 
-    // 2. Активація (запис посилання юзера в базу)
-    function processActivation(bankKey) {
-        const inputField = document.getElementById('url-' + bankKey);
-        const userLink = inputField.value.trim();
-
-        if (!userLink.includes('http')) {
-            alert('Помилка: Введіть коректне посилання!');
+    /* ЗБЕРЕЖЕННЯ ПОСИЛАННЯ ЮЗЕРА */
+    function handleStep2(bank) {
+        const val = document.getElementById('url-' + bank).value.trim();
+        
+        if (!val.includes('http')) {
+            alert('Будь ласка, вставте повне посилання з http або https!');
             return;
         }
 
-        // Зберігаємо в базу Firebase під ID цього юзера
-        database.ref('referral_pool/' + bankKey + '/' + currentUserId).set({
-            link: userLink,
-            timestamp: Date.now(),
-            status: 'active'
+        db.ref('pool/' + bank + '/' + uID).set({
+            url: val,
+            owner: uID,
+            added: Date.now()
         }).then(() => {
-            localStorage.setItem('done_' + bankKey, 'true');
-            updateUIState();
-            alert('Вітаємо! Ваше посилання додано в систему.');
-        }).catch(err => {
-            console.error(err);
-            alert('Помилка доступу до бази. Перевірте інтернет.');
+            localStorage.setItem('active_' + bank, 'true');
+            alert('БАНК АКТИВОВАНО! Ваше посилання тепер у пулі рандому.');
+            location.reload();
         });
     }
 
-    // 3. Оновлення інтерфейсу
-    function updateUIState() {
+    /* ОНОВЛЕННЯ ІНТЕРФЕЙСУ ПРИ ЗАВАНТАЖЕННІ */
+    window.onload = function() {
         const banks = ['raiffeisen', 'alliance', 'izibank'];
-        let activeCount = 0;
+        let hasAny = false;
 
         banks.forEach(b => {
-            if (localStorage.getItem('done_' + b)) {
-                document.getElementById('card-' + b).classList.add('completed');
-                document.getElementById('act-' + b).style.display = 'none';
-                activeCount++;
+            if (localStorage.getItem('active_' + b)) {
+                document.getElementById('block-' + b).classList.add('active');
+                hasAny = true;
             }
         });
 
-        // Якщо активовано хоча б один банк — показуємо кабінет
-        if (activeCount > 0) {
-            document.getElementById('user-dashboard').classList.remove('hidden');
-            const myUrl = window.location.origin + window.location.pathname + '?ref=' + currentUserId;
-            document.getElementById('my-personal-link').innerText = myUrl;
+        // Показуємо кабінет, якщо активовано хоча б один банк
+        if (hasAny) {
+            document.getElementById('partner-dashboard').classList.remove('hidden');
+            document.getElementById('display-id').innerText = uID;
+            
+            // Формуємо твоє посилання на сайт
+            const myUrl = "https://referalteam.github.io/refer-system/?ref=" + uID;
+            document.getElementById('personal-link-display').innerText = myUrl;
+
+            // Отримуємо статистику з бази
+            db.ref('users/' + uID + '/stats/count').on('value', snap => {
+                document.getElementById('display-referrals').innerText = snap.val() || 0;
+            });
         }
+    };
 
-        // Отримуємо кількість запрошених з бази
-        database.ref('users_registry/' + currentUserId + '/referrals_count').on('value', (snap) => {
-            document.getElementById('invite-count').innerText = snap.val() || 0;
-        });
+    function copyLink() {
+        const t = document.getElementById('personal-link-display').innerText;
+        navigator.clipboard.writeText(t).then(() => alert('ПОСИЛАННЯ СКОПІЙОВАНО!'));
     }
-
-    // 4. Копіювання посилання
-    function copyMyLink() {
-        const text = document.getElementById('my-personal-link').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Скопійовано! Тепер діліться ним з друзями.');
-        });
-    }
-
-    // Запуск при старті
-    window.onload = updateUIState;
-
 </script>
+
 </body>
 </html>
